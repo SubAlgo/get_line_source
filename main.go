@@ -1,46 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-
-	"github.com/line/line-bot-sdk-go/v7/linebot"
-	"github.com/line/line-bot-sdk-go/v7/linebot/httphandler"
+	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
-	handler, err := httphandler.New(
-		"af42dc438bbcf308b5b0d274b4e1846e",
-		"CX7kjGwq6ASjy3wd2SRihDD4XhlEzVKbTQ07JIUqGhNhXHuQwJ1L9NdP80uvSpqFz7qpmsdSQO0r9HmvEITCUGoy4j/zJWxwx09+5P8Mklzbo1H2FBnrrPXYx3iFhl+iZU74LMu0q8HEpQCj/vk1DgdB04t89/1O/w1cDnyilFU=",
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	app := fiber.New()
 
-	// Setup HTTP Server for receiving requests from LINE platform
-	handler.HandleEvents(func(events []*linebot.Event, r *http.Request) {
-		bot, err := handler.NewClient()
-		if err != nil {
-			log.Print(err)
-			return
-		}
-		for _, event := range events {
-			if event.Type == linebot.EventTypeMessage {
-				switch message := event.Message.(type) {
-				case *linebot.TextMessage:
-					msg := fmt.Sprintf("reMsg: %v \ngroupID: %v\n", message.Text, event.Source.GroupID)
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(msg)).Do(); err != nil {
-						log.Print(err)
-					}
-				}
-			}
-		}
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
 	})
-	http.Handle("/callback", handler)
-	// This is just a sample code.
-	// For actually use, you must support HTTPS by using `ListenAndServeTLS`, reverse proxy or etc.
-	if err := http.ListenAndServe(":"+"5000", nil); err != nil {
-		log.Fatal(err)
-	}
+
+	app.Listen(":3000")
 }
+
+/*
+func handlerEvent(e []*linebot.Event, r *http.Request) {
+
+}
+*/
