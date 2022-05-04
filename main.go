@@ -40,7 +40,7 @@ func main() {
 	http.Handle("/callback", handler)
 	// This is just a sample code.
 	// For actually use, you must support HTTPS by using `ListenAndServeTLS`, reverse proxy or etc.
-	if err := http.ListenAndServe(":"+"80", nil); err != nil {
+	if err := http.ListenAndServe(":"+"5000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
